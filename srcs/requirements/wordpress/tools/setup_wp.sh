@@ -19,7 +19,7 @@ if [ ! -f "${WP_PATH}/wp-config.php" ]; then
     # Create wp-config.php from .env vars
     wp config create --path="${WP_PATH}" --dbname="${MYSQL_DATABASE}" \
         --dbuser="${MYSQL_USER}" --dbpass="${MYSQL_PASSWORD}" \
-        --dbhost="mydb:3306" --allow-root --quiet
+        --dbhost="mariadb:3306" --allow-root --quiet
 
     # wait for MariaDB available
     until wp db check --path="${WP_PATH}" --allow-root --quiet 2>/dev/null; do
