@@ -14,8 +14,13 @@ until mysqladmin --socket=/tmp/mysql.sock ping --silent 2>/dev/null; do
     sleep 1
 done
 
+if [ -d "/var/lib/mysql/mysql" ]; then
+	PASS=${MYSQL_ROOT_PASSWORD}
+fi
+
 # Create base + user from .env vars
-mysql --socket=/tmp/mysql.sock -u root << EOF
+mysql --socket=/tmp/mysql.sock -u root -p${PASS} << EOF
+
 CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};
     CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';
     GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'%';
