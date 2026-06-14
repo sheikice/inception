@@ -1,7 +1,7 @@
 FROM debian:12
 
 RUN apt-get update && apt-get install -y \
-	php-fpm \
+	php8.2-fpm \
     php-mysql \
     php-curl \
     php-gd \
