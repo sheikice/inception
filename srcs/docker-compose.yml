@@ -1,3 +1,5 @@
+name: "${DOMAIN_NAME}"
+
 secrets:
   mysql_password:
     file: ../secrets/mysql_password.txt
@@ -12,15 +14,13 @@ volumes:
   wordpress:
     driver: local
     driver_opts:
-# change for /home/login/data
-      device: ~/data/wordpress
+      device: "${DEVICE_PATH}/wordpress"
       o: bind
       type: none
   mariadb:
     driver: local
     driver_opts:
-# change for /home/login/data
-      device: ~/data/mariadb
+      device: "${DEVICE_PATH}/mariadb"
       o: bind
       type: none
 
@@ -32,7 +32,7 @@ services:
   nginx:
     container_name: nginx
     ports:
-      - "443:443"
+      - "${NGINX_PORT}:${NGINX_PORT}"
     depends_on:
       - wordpress
     build: ./requirements/nginx
@@ -73,4 +73,3 @@ services:
     networks:
       - inception
     restart: always
-
