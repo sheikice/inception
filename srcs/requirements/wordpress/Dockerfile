@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
     wget \
     curl \
 	default-mysql-client \
+	sendmail \
     && rm -rf /var/lib/apt/lists/*
 
 COPY conf/www.conf /etc/php/8.2/fpm/pool.d/www.conf
@@ -22,4 +23,4 @@ WORKDIR /var/www/html
 
 EXPOSE 9000
 
-CMD ["setup_wp.sh"]
+ENTRYPOINT ["setup_wp.sh"]

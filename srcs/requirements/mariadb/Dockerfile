@@ -14,4 +14,4 @@ RUN chmod +x /usr/local/bin/init_db.sh
 
 EXPOSE 3306
 
-CMD ["init_db.sh"]
+ENTRYPOINT ["init_db.sh"]
