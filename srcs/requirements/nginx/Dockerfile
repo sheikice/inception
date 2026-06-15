@@ -3,6 +3,7 @@ FROM debian:12
 RUN apt-get update && apt-get install -y \
 	nginx \
 	openssl \
+	procps \
 	perl \
 	&& rm -rf /var/lib/apt/lists/* \
 	&& openssl genrsa -out /etc/ssl/private/mykey.pem 4096 \
