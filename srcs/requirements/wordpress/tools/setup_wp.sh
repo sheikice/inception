@@ -3,17 +3,10 @@ set -e
 
 WP_PATH="/var/www/html"
 MYSQL_ROOT_PASSWORD=$(cat /run/secrets/mysql_root_password)
-MYSQL_DATABASE=$(cat /run/secrets/mysql_database)
-MYSQL_USER=$(cat /run/secrets/mysql_user)
 MYSQL_PASSWORD=$(cat /run/secrets/mysql_password)
 
-WP_USER=$(cat /run/secrets/wp_user)
 WP_USER_PASSWORD=$(cat /run/secrets/wp_user_password)
-WP_ADMIN_USER=$(cat /run/secrets/wp_admin_user)
 WP_ADMIN_PASSWORD=$(cat /run/secrets/wp_admin_password)
-WP_USER_EMAIL=$(cat /run/secrets/wp_user_email)
-WP_ADMIN_EMAIL=$(cat /run/secrets/wp_admin_email)
-DOMAIN_NAME=$(cat /run/secrets/domain_name)
 
 # Download wp-cli
 if [ ! -f /usr/local/bin/wp ]; then

@@ -2,8 +2,6 @@
 set -e
 
 MYSQL_ROOT_PASSWORD=$(cat /run/secrets/mysql_root_password)
-MYSQL_DATABASE=$(cat /run/secrets/mysql_database)
-MYSQL_USER=$(cat /run/secrets/mysql_user)
 MYSQL_PASSWORD=$(cat /run/secrets/mysql_password)
 # Init first boot
 if [ ! -d "/var/lib/mysql/mysql" ]; then

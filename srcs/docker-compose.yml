@@ -1,27 +1,12 @@
 secrets:
-  mysql_database:
-    file: ../secrets/mysql_database.txt
-  mysql_user:
-    file: ../secrets/mysql_user.txt
   mysql_password:
     file: ../secrets/mysql_password.txt
   mysql_root_password:
     file: ../secrets/mysql_root_password.txt
-  wp_admin_user:
-    file: ../secrets/wp_admin_user.txt
   wp_admin_password:
     file: ../secrets/wp_admin_password.txt
-  wp_admin_email:
-    file: ../secrets/wp_admin_email.txt
-  wp_user:
-    file: ../secrets/wp_user.txt
   wp_user_password:
     file: ../secrets/wp_user_password.txt
-  wp_user_email:
-    file: ../secrets/wp_user_email.txt
-  domain_name:
-    file: ../secrets/domain_name.txt
-
 
 volumes:
   wordpress:
@@ -61,19 +46,12 @@ services:
     container_name: wordpress
     build: ./requirements/wordpress
     secrets:
-      - mysql_database
-      - mysql_user
       - mysql_password
       - mysql_root_password
-      - wp_admin_user
       - wp_admin_password
-      - wp_admin_email
-      - wp_user
       - wp_user_password
-      - wp_user_email
-      - domain_name
-
-
+    env_file:
+      - .env
     volumes:
       - wordpress:/var/www/html
     depends_on:
@@ -88,10 +66,10 @@ services:
     volumes:
       - mariadb:/var/lib/mysql
     secrets:
-      - mysql_database
-      - mysql_user
       - mysql_password
       - mysql_root_password
+    env_file:
+      - .env
     networks:
       - inception
     restart: always
