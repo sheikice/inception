@@ -5,10 +5,8 @@ ___
 
 ### requirements on linux:
 
-```bash
-sudo apt-get update && apt-get install -y make docker docker-compose-plugin
-docker compose version
-```
+[IMPORTANT]
+cf requirements part of README.md
 
 ### configuration files:
 - Every Dockerfiles
@@ -20,8 +18,8 @@ docker compose version
 
 ```bash
 ls secrets # stores sensitive data like passwords
-- secrets are created in /run/secrets in their dedicated containers
 ```
+- secrets are created in /run/secrets in their dedicated containers
 - check with `docker exec mariadb ls /run/secrets`
 
 ### environment:
@@ -30,11 +28,13 @@ ls secrets # stores sensitive data like passwords
 cat srcs/.env # stores not sensitive data like domain name
 ```
 
-### build:
+### manage the project:
 
 ```bash
 make all # build
-make fclean # clean
+make stop # stop the containers
+make logs # show docker compose logs
+make fclean # clean the project
 make ps # show running containers
 ```
 
@@ -51,3 +51,5 @@ docker logs mariadb # 6: check container logs
 docker volume ls # 7: list volumes of containers
 docker volume inspect srcs_mariadb # 8: inspect specific volume + check where the data is stored on host 
 ```
+
+docker compose manages volumes that are binded to a location (device path in .env file) that stores permanently the mariadb and wordpress data.
