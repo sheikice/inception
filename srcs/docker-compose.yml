@@ -35,6 +35,7 @@ services:
       - "${NGINX_PORT}:${NGINX_PORT}"
     depends_on:
       - wordpress
+      - lighttpd
     build: ./requirements/nginx
     volumes:
       - wordpress:/var/www/html
@@ -74,6 +75,7 @@ services:
     networks:
       - inception
     restart: always
+
   redis:
     container_name: redis
     build: ./requirements/redis
@@ -81,3 +83,13 @@ services:
       - .env
     networks:
       - inception
+    restart: always
+
+  lighttpd:
+    container_name: lighttpd
+    build: ./requirements/lighttpd
+    env_file:
+      - .env
+    networks:
+      - inception
+    restart: always
