@@ -56,6 +56,7 @@ services:
       - wordpress:/var/www/html
     depends_on:
       - mariadb
+      - redis
     networks:
       - inception
     restart: always
@@ -73,3 +74,10 @@ services:
     networks:
       - inception
     restart: always
+  redis:
+    container_name: redis
+    build: ./requirements/redis
+    env_file:
+      - .env
+    networks:
+      - inception

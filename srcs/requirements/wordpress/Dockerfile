@@ -2,6 +2,7 @@ FROM debian:12
 
 RUN apt-get update && apt-get install -y \
 	php8.2-fpm \
+	php8.2-redis \
     php-mysql \
     php-curl \
     php-gd \
@@ -12,6 +13,7 @@ RUN apt-get update && apt-get install -y \
     curl \
 	default-mysql-client \
 	sendmail \
+	netcat-openbsd \
     && rm -rf /var/lib/apt/lists/*
 
 COPY conf/www.conf /etc/php/8.2/fpm/pool.d/www.conf

@@ -32,6 +32,13 @@ if [ ! -f "${WP_PATH}/wp-config.php" ]; then
         sleep 2
     done
 
+
+	# wait for redis available
+    until nc -z redis 6379 2>/dev/null; do
+        echo "Waiting for redis..."
+        sleep 2
+    done
+
     # Install WordPress
     wp core install --path="${WP_PATH}" --url="https://${DOMAIN_NAME}" \
         --title="Inception" --admin_user="${WP_ADMIN_USER}" \
@@ -44,24 +51,15 @@ if [ ! -f "${WP_PATH}/wp-config.php" ]; then
 			--user_pass="${WP_USER_PASSWORD}" --path="${WP_PATH}" \
 			--allow-root --quiet
 	fi
+	
+	# redis config
+	wp plugin install redis-cache --activate --path="${WP_PATH}" --allow-root
+	sed -i "s|/\* That's all, stop editing\! Happy publishing\. \*/|define( 'WP_REDIS_HOST', 'redis' );\ndefine( 'WP_REDIS_PORT', 6379 );\n\n/* That's all, stop editing! Happy publishing. */|" "${WP_PATH}/wp-config.php"
+	wp redis enable --path="${WP_PATH}" --allow-root
 
-	## Install essential plugins
-	PLUGINS=(
-	"woocommerce"
-	"elementor"
-	"contact-form-7"
-	"wpforms-lite"
-	"seo-by-rank-math"
-	"wp-super-cache"
-	)
-
-	for PLUGIN in "${PLUGINS[@]}"; do
-		wp plugin  install $PLUGIN --activate --path="${WP_PATH}" --allow-root
-	done
-
-	echo "All essential plugins installed and activated!"
 	# useless theme
 	wp theme install saaslauncher --activate --path="${WP_PATH}" --allow-root --quiet
+	echo "All essential plugins installed and activated!"
 
     chown -R www-data:www-data "${WP_PATH}"
 fi
