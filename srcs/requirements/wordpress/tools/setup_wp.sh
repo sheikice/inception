@@ -58,7 +58,7 @@ if [ ! -f "${WP_PATH}/wp-config.php" ]; then
 	wp redis enable --path="${WP_PATH}" --allow-root
 
 	# useless theme
-	wp theme install saaslauncher --activate --path="${WP_PATH}" --allow-root --quiet
+	# wp theme install saaslauncher --activate --path="${WP_PATH}" --allow-root --quiet
 	echo "All essential plugins installed and activated!"
 
     chown -R www-data:www-data "${WP_PATH}"
