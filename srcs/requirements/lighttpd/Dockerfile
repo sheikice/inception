@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y lighttpd \
 RUN useradd -r -s /sbin/nologin lighttpd
 
 COPY conf/lighttpd.conf /etc/lighttpd/lighttpd.conf
-COPY conf/static_page.html /var/www/html/index.html
+COPY conf/static_page.html /var/www/html/static/index.html
 
 EXPOSE 80
 
