@@ -1,6 +1,7 @@
 all: fclean up
 
-up:
+up: 
+	@mkdir -p ~/data/wordpress ~/data/mariadb
 	@docker compose --file srcs/docker-compose.yml up --build -d
 
 re: fclean up
