@@ -1,7 +1,8 @@
 FROM debian:12
 
-RUN set -eux &&  apt-get update && apt-get install -y \
-	 redis-server
+RUN set -e &&  apt-get update && apt-get install -y \
+	redis-server \
+	&& rm -rf /var/lib/apt/lists/*
 
 RUN mkdir /data && chown redis:redis /data
 WORKDIR /data
