@@ -21,6 +21,7 @@ ls secrets # stores sensitive data like passwords
 ```
 - secrets are created in /run/secrets in their dedicated containers
 - check with `docker exec mariadb ls /run/secrets`
+- check with `docker exec wordpress ls /run/secrets`
 
 ### environment:
 
