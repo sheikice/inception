@@ -1,4 +1,4 @@
-*This project has been created as part of the 42 curriculum by <jwuille>.*
+*This project has been created as part of the 42 curriculum by jwuille.*
 
 # DESCRIPTION
 ___
@@ -23,7 +23,7 @@ There is also a DEV_DOC.md for more details on the setup.
 
 ### Virtual Machines vs Docker
 
-Docker creates an isolated ligh weigthed environment that runs services inside and their own dependancies.
+Docker creates an isolated light weigthed environment that runs services inside and brings their own dependancies.
 	A container is lighter than a virtual machine and faster to deploy
 	- it uses linux kernel to run containers so it makes it fast to run
 	- it's easy to give the environment configuration so anyone can have the same environment working on the same project
@@ -43,7 +43,6 @@ Nginx is the only one exposed on port 443 (common port for HTTPS).
 Then it has to routes to fast_cgi on port 9000 of wordpress container(php-fpm).
 If wordpress needs to call the database it will make a request to port 3306 of mariadb container
 
-
 ### Docker Volumes
 
 Named volumes are used to create persistent data. Even after a `make fclean`. Its stored in the device path that is configured in .env file
@@ -52,22 +51,29 @@ Named volumes are used to create persistent data. Even after a `make fclean`. It
 
 # Instructions
 ___
-	Linux:
+
+### Install for DEBIAN:
 ```bash
-	sudo apt-get update && apt-get install -y make docker docker-compose-plugin # Requirements
-	mkdir -p ~/data/wordpress ~/data/mariadb # path of persistent data
-	mkdir secrets && cd secrets
-	touch mysql_password.txt wp_admin_password.txt mysql_root_password.txt wp_user_password.txt # You have to fill all the files with testing credentials
-	cd ..
+	sudo apt-get update && apt-get install -y make curl # Requirements
+
+	curl -fsSL https://download.docker.com/linux/debian/gpg \
+    | gpg --dearmor -o /usr/share/keyrings/docker.gpg
+	echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker.gpg] https://download.docker.com/linux/debian $(. /etc/os-release && echo "$VERSION_CODENAME") stable" > /etc/apt/sources.list.d/docker.list # Docker repo setup
+
+	sudo apt-get update && apt-get install -y docker docker-compose-plugin # Docker Requirements
 	cp srcs/.env.example srcs/.env # you can fill this file too or let it just like the example (simpler)
-	make all # Build the project
-	open https://login.42.fr # replace login.42.fr with the domain name in .env
+	sudo sed -i "s/DOMAIN_NAME=jwuille/DOMAIN_NAME=${USERNAME}/" srcs/.env
+	sudo sed -i "s/localhost/localhost ${USERNAME}.42.fr/" /etc/hosts # Must be adapted to domain name in .env file
+
+	make # Build the project
+	firefox "https://${USERNAME}.42.fr" # replace login.42.fr with the domain name in .env
 	# it may end in 502 Gateway, that means the website is still configurating, reload the page in 2 minutes	
 ```
-	Clean the project:
+
+### Clean the project:
 ```bash
 	make fclean
-	cd ~/data && sudo rm -rf mariadb wordpress # if you want to definitely supress persistent data
+	cd ~/data && sudo rm -rf mariadb wordpress # if you want to DEFINITELY delete and lose the persistent data (!WARNING)
 ```
 
 # Resources
