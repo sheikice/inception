@@ -37,13 +37,14 @@ services:
       - "${NGINX_PORT}:${NGINX_PORT}"
     depends_on:
       - wordpress
+      - adminer
       - lighttpd
     build: ./requirements/nginx
     volumes:
       - wordpress:/var/www/html
     networks:
       - inception
-    restart: always
+    restart: unless-stopped
 
   wordpress:
     container_name: wordpress
@@ -62,7 +63,7 @@ services:
       - redis
     networks:
       - inception
-    restart: always
+    restart: unless-stopped
 
   mariadb:
     container_name: mariadb
@@ -76,7 +77,7 @@ services:
       - .env
     networks:
       - inception
-    restart: always
+    restart: unless-stopped
 
   redis:
     container_name: redis
@@ -85,7 +86,7 @@ services:
       - .env
     networks:
       - inception
-    restart: always
+    restart: unless-stopped
 
   lighttpd:
     container_name: lighttpd
@@ -94,8 +95,7 @@ services:
       - .env
     networks:
       - inception
-    restart: always
-
+    restart: unless-stopped
 
   ftp:
     container_name: ftp
@@ -114,4 +114,11 @@ services:
     networks:
       - inception
     stop_grace_period: 1s
-    restart: always
+    restart: unless-stopped
+
+  adminer:
+    container_name: adminer
+    build: ./requirements/adminer/
+    networks:
+      - inception
+    restart: unless-stopped
