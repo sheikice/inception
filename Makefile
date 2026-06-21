@@ -1,5 +1,5 @@
 SECRETS_DIR="secrets"
-SECRETS= mysql_password.txt mysql_root_password.txt wp_admin_password.txt wp_user_password.txt
+SECRETS= mysql_password.txt mysql_root_password.txt wp_admin_password.txt wp_user_password.txt ftp_user_password.txt
 all: fclean up
 
 up: secrets
