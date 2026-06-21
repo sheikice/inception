@@ -3,12 +3,12 @@ FROM debian:12
 RUN set -e && apt-get update && apt-get install -y \
 	php8.2-fpm \
 	php8.2-redis \
-    php-mysql \
-    php-curl \
-    php-gd \
-    php-mbstring \
-    php-xml \
-    php-zip \
+    php8.2-mysql \
+    php8.2-curl \
+    php8.2-gd \
+    php8.2-mbstring \
+    php8.2-xml \
+    php8.2-zip \
     wget \
     curl \
 	default-mysql-client \
