@@ -15,6 +15,10 @@ RUN chown adminer:adminer /var/www/html
 
 COPY conf/www.conf /etc/php/8.2/fpm/pool.d/www.conf
 
+RUN rm -rf /var/log/php8.2-fpm.log \
+	&& ln -s /dev/stdout /var/log/php8.2-fpm.log \
+	&& touch /var/log/php8.2-fpm.log
+
 EXPOSE 8080
 
 CMD ["php-fpm8.2", "-F"]

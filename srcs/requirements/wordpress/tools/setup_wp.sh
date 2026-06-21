@@ -64,6 +64,14 @@ if [ ! -f "${WP_PATH}/wp-config.php" ]; then
     chown -R www-data:www-data "${WP_PATH}"
 fi
 
+rm -rf /var/log/php8.2-fpm.log \
+	&& rm -rf /var/log/php-fpm-access.log \
+	&& ln -s /dev/stderr /var/log/php8.2-fpm.log \
+	&& ln -s /dev/stdout /var/log/php-fpm-access.log \
+	&& touch /var/log/php8.2-fpm.log \
+	&& touch /var/log/php-fpm-access.log
+
+
 # php-fpm foreground — PID 1
 PHP_VERSION=$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;')
-exec php-fpm${PHP_VERSION} -F
+exec "$@"

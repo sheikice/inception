@@ -1,9 +1,9 @@
 SECRETS_DIR="secrets"
 SECRETS= mysql_password.txt mysql_root_password.txt wp_admin_password.txt wp_user_password.txt ftp_user_password.txt
-all: fclean up
+all: up
 
 up: secrets
-	@mkdir -p ~/data/wordpress ~/data/mariadb
+	@mkdir -p ~/data/wordpress ~/data/mariadb ~/data/rsyslog
 	@docker compose --file srcs/docker-compose.yml up --build -d
 
 re: fclean up

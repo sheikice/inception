@@ -26,3 +26,6 @@ WORKDIR /var/www/html
 EXPOSE 9000
 
 ENTRYPOINT ["setup_wp.sh"]
+
+CMD ["php-fpm8.2", "-F"]
+

@@ -25,21 +25,42 @@ volumes:
       device: "${DEVICE_PATH}/mariadb"
       o: bind
       type: none
+  rsyslog:
+    driver: local
+    driver_opts:
+      device: "${DEVICE_PATH}/rsyslog"
+      o: bind
+      type: none
 
 networks:
   inception:
     name: inception
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.5.0.0/16
+          gateway: 10.5.0.1
 
 services:
   nginx:
     container_name: nginx
+    build: ./requirements/nginx
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "tcp://10.5.0.10:514"
+        tag: nginx
     ports:
       - "${NGINX_PORT}:${NGINX_PORT}"
     depends_on:
-      - wordpress
-      - adminer
-      - lighttpd
-    build: ./requirements/nginx
+      rsyslog:
+        condition: service_healthy
+      wordpress:
+        condition: service_started
+      adminer:
+        condition: service_started
+      lighttpd:
+        condition: service_started
     volumes:
       - wordpress:/var/www/html
     networks:
@@ -49,6 +70,11 @@ services:
   wordpress:
     container_name: wordpress
     build: ./requirements/wordpress
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "tcp://10.5.0.10:514"
+        tag: wordpress
     secrets:
       - mysql_password
       - mysql_root_password
@@ -59,8 +85,12 @@ services:
     volumes:
       - wordpress:/var/www/html
     depends_on:
-      - mariadb
-      - redis
+      rsyslog:
+        condition: service_healthy
+      mariadb:
+        condition: service_started
+      redis:
+        condition: service_started
     networks:
       - inception
     restart: unless-stopped
@@ -68,8 +98,16 @@ services:
   mariadb:
     container_name: mariadb
     build: ./requirements/mariadb
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "tcp://10.5.0.10:514"
+        tag: mariadb
     volumes:
       - mariadb:/var/lib/mysql
+    depends_on:
+      rsyslog:
+        condition: service_healthy
     secrets:
       - mysql_password
       - mysql_root_password
@@ -82,6 +120,14 @@ services:
   redis:
     container_name: redis
     build: ./requirements/redis
+    depends_on:
+      rsyslog:
+        condition: service_healthy
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "tcp://10.5.0.10:514"
+        tag: redis
     env_file:
       - .env
     networks:
@@ -91,6 +137,14 @@ services:
   lighttpd:
     container_name: lighttpd
     build: ./requirements/lighttpd
+    depends_on:
+      rsyslog:
+        condition: service_healthy
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "tcp://10.5.0.10:514"
+        tag: lighttpd
     env_file:
       - .env
     networks:
@@ -100,13 +154,21 @@ services:
   ftp:
     container_name: ftp
     build: ./requirements/ftp
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "tcp://10.5.0.10:514"
+        tag: ftp
     ports:
       - "21:21"
       - "30000-30005:30000-30005"
     volumes:
       - wordpress:/var/www/html
     depends_on:
-      - wordpress
+      rsyslog:
+        condition: service_healthy
+      wordpress:
+        condition: service_started
     env_file:
       - .env
     secrets:
@@ -119,6 +181,30 @@ services:
   adminer:
     container_name: adminer
     build: ./requirements/adminer/
+    depends_on:
+      rsyslog:
+        condition: service_healthy
+    logging:
+      driver: syslog
+      options:
+        syslog-address: "tcp://10.5.0.10:514"
+        tag: adminer
     networks:
       - inception
+    restart: unless-stopped
+
+  rsyslog:
+    container_name: rsyslog
+    build: ./requirements/rsyslog/
+    volumes:
+      - rsyslog:/var/log/centralized
+    networks:
+      inception:
+        ipv4_address: 10.5.0.10
+    healthcheck:
+      test: ["CMD", "nc", "-vz", "-w", "2", "localhost", "514"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 2s
     restart: unless-stopped
