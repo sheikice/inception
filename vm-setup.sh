@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+GOINFRE=$HOME/goinfre
 # Config
 # ==================
 USERNAME="jwuille"
@@ -9,11 +10,14 @@ VM_NAME="inception42"
 RAM=4096
 CPUS=2
 DISK_SIZE_MB=7000
+
+PATH_VM=$GOINFRE
+# PATH_VM=$HOME
 # ==================
 
 DEBIAN_VERSION="12.11.0"
 ISO_NAME="debian-${DEBIAN_VERSION}-amd64-netinst.iso"
-ISO_DIR="$HOME/Downloads"
+ISO_DIR="${PATH_VM}/iso"
 ISO="$ISO_DIR/$ISO_NAME"
 ISO_URL="https://cdimage.debian.org/mirror/cdimage/archive/${DEBIAN_VERSION}/amd64/iso-cd/${ISO_NAME}"
 
@@ -46,7 +50,7 @@ VBoxManage modifyvm "$VM_NAME" \
   --natpf1 "http,tcp,,8080,,80" \
   --natpf1 "https,tcp,,8443,,443"
 VBoxManage createhd \
-  --filename "$HOME/VirtualBox VMs/$VM_NAME/$VM_NAME.vdi" \
+  --filename "${PATH_VM}/VirtualBox VMs/$VM_NAME/$VM_NAME.vdi" \
   --size "$DISK_SIZE_MB" \
   --format VDI
 VBoxManage storagectl "$VM_NAME" \
@@ -58,7 +62,7 @@ VBoxManage storageattach "$VM_NAME" \
   --port 0 \
   --device 0 \
   --type hdd \
-  --medium "$HOME/VirtualBox VMs/$VM_NAME/$VM_NAME.vdi"
+  --medium "${PATH_VM}/VirtualBox VMs/$VM_NAME/$VM_NAME.vdi"
 VBoxManage storageattach "$VM_NAME" \
   --storagectl "SATA Controller" \
   --port 1 \
