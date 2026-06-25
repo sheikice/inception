@@ -9,7 +9,7 @@ PASSWORD="tochange"
 VM_NAME="inception42"
 RAM=4096
 CPUS=2
-DISK_SIZE_MB=7000
+DISK_SIZE_MB=9000
 
 PATH_VM=$GOINFRE
 # PATH_VM=$HOME
@@ -80,7 +80,7 @@ sed -i '/^deb cdrom:/s/^/#/' /etc/apt/sources.list
 
 # Base packages
 apt-get update
-apt-get install -y \
+apt-get install -y --no-install-recommends \
     sudo \
     openssh-server \
     curl \
@@ -88,6 +88,7 @@ apt-get install -y \
     firefox-esr \
     git \
     make \
+	ftp \
     ca-certificates
 
 # Docker repo setup
@@ -97,8 +98,7 @@ curl -fsSL https://download.docker.com/linux/debian/gpg \
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker.gpg] https://download.docker.com/linux/debian $(. /etc/os-release && echo "$VERSION_CODENAME") stable" \
     > /etc/apt/sources.list.d/docker.list
 
-apt-get update
-apt-get install -y \
+apt-get update && apt-get install -y --no-install-recommends \
     docker.io \
     docker-compose-plugin
 
