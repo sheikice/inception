@@ -1,29 +1,12 @@
 # USER_DOC
 
-The docker-compose.yaml file is a configuration file that helps to orchestrate
-different services isolated in separated containers.
+## How to check services of the project:
 
-Each one of those services has their own dockerfile to build their own image.
-___
+In Inception directory use:
 
-## Nginx:
-
-- This is the reverse proxy that stands between the server and the client.
-- It assures a secured connexion (https, TLS1.2 TLS1.3)
-- It routes requests to the good services.
-
-## Wordpress:
-
-- Is the content of the website, it allows to create users and manages the website with an interface. It allows to upload files and download plugins
-
-## Mariadb:
-
-- is the database of wordpress. It stores:
-    - Wordpress credentials
-    - Articles
-    - Commentaries
-    - Every dynamic data for the website (except voluminous files like uploaded files/media)
-___
+```bash
+make ps
+```
 
 ## How to build the project:
 
@@ -39,15 +22,53 @@ ___
 
 ## Access the website and the administration panel.
 
-- Access the website in the browser with: https://jwuille.42.fr
-- or the administration panel with https://jwuille.42.fr/wp-login.php then connect with admin credentials
+### Website
+
+- Access the website in the browser with:
+
+```bash
+firefox https://jwuille.42.fr # use the browser of your choice and write the domain name written in srcs/.env
+```
+
+- Access the static website in the browser with:
+
+```bash
+firefox https://jwuille.42.fr/static # use the browser of your choice and write the domain name written in srcs/.env
+```
+
+### Wordpress admin
+
+- access the administration panel with: 
+
+```bash
+https://jwuille.42.fr/wp-login.php # then connect with admin credentials from secrets and srcs/.env
+```
+
+### Adminer admin
+
+- access the administration panel for the database with:
+
+```bash
+https://jwuille.42.fr/myadminer.php # then connect with user mysql credentials from secrets and srcs/.env
+# Server mariadb:3306
+# Username  *written in srcs/.env*
+# Password  *written in secrets*
+# Database wordpress
+```
+
+## Use FTP
+
+
+```bash
+ftp localhost 21 # Connect to the ftp server with credentials in *srcs/.env* and secrets
+help # list all ftp commands
+send <file># upload file to server directory
+ls # list files in upload directory
+get <file># download file to server directory
+```
 
 ## Locate and manage credentials.
 
-- Password are stored in txt files in secrets directory
 - Identifiers, domain name and mails are in srcs/.env
-- Everything can be changed in those files
-
-## Check that the services are running correctly.
-
-- Check if the services are running with make ps
+- Password are stored in txt files in secrets directory
+- Creds can be changed in those 2 files

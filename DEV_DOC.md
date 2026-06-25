@@ -10,9 +10,7 @@ cf requirements part of README.md
 
 ### configuration files:
 - Every Dockerfiles
-- mariadb config file: srcs/requirements/mariadb/conf/my.cnf
-- wordpress config file: srcs/requirements/wordpress/conf/www.conf
-- nginx config file: srcs/requirements/nginx/conf/nginx.conf
+- Every services config file: srcs/requirements/*/conf/*
 
 ### secrets:
 
@@ -31,6 +29,7 @@ cat srcs/.env # stores not sensitive data like domain name
 
 ### manage the project:
 
+- With the Makefile:
 ```bash
 make all # build
 make stop # stop the containers
@@ -39,6 +38,11 @@ make fclean # clean the project
 make ps # show running containers
 ```
 
+- With compose:
+```bash
+docker compose help # list all helpfull commands
+
+```
 ### Manage the containers and volumes:
 
 ```bash

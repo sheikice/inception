@@ -80,11 +80,12 @@ ___
 # BONUS:
 ___
 
-4 more services are implemented in this inception project:
-- rsyslog centralizes the logs in its own volume.
-- adminer: an interface for managing databases.
-- lighttpd: a light server. Here it's used for serving simple html static page.
+5 more services are implemented in this inception project:
+- redis: serves php faster using a cache.
 - ftp: allow uploading and serving file (not securely).
+- lighttpd: a light server. Here it's used for serving simple html static page.
+- adminer: an interface for managing databases.
+- rsyslog centralizes the logs in its own volume.
 
 
 # Resources
