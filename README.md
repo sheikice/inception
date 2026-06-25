@@ -36,8 +36,9 @@ Docker creates an isolated light weigthed environment that runs services inside 
 There is a .gitignore file that prevent secrets and .env to appear in the git.
 	In a first place, its possible to use env-file directive to add environment variables in containers. Thoses variables are easy to find in containers with `docker inspect 'container name'`
 	Docker compose has secrets directive to use local data that shouldnt be shared or uploaded. This way its not possible to see the passwords with docker inspect.
-	
+
 ### Docker Network
+
 The docker network is used to allow communication between each containers.
 Nginx is the only one exposed on port 443 (common port for HTTPS).
 Then it has to routes to fast_cgi on port 9000 of wordpress container(php-fpm).
@@ -54,13 +55,13 @@ ___
 
 ### Install for DEBIAN:
 ```bash
-	sudo apt-get update && apt-get install -y make curl # Requirements
+	sudo apt-get update && sudo apt-get install -y make curl # Requirements
 
 	curl -fsSL https://download.docker.com/linux/debian/gpg \
     | gpg --dearmor -o /usr/share/keyrings/docker.gpg
 	echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker.gpg] https://download.docker.com/linux/debian $(. /etc/os-release && echo "$VERSION_CODENAME") stable" > /etc/apt/sources.list.d/docker.list # Docker repo setup
 
-	sudo apt-get update && apt-get install -y docker docker-compose-plugin # Docker Requirements
+	sudo apt-get update && sudo apt-get install -y docker docker-compose-plugin # Docker Requirements
 	cp srcs/.env.example srcs/.env # you can fill this file too or let it just like the example (simpler)
 	sudo sed -i "s/DOMAIN_NAME=jwuille/DOMAIN_NAME=${USERNAME}/" srcs/.env
 	sudo sed -i "s/localhost/localhost ${USERNAME}.42.fr/" /etc/hosts # Must be adapted to domain name in .env file
@@ -73,8 +74,18 @@ ___
 ### Clean the project:
 ```bash
 	make fclean
-	cd ~/data && sudo rm -rf mariadb wordpress # if you want to DEFINITELY delete and lose the persistent data (!WARNING)
+	cd ~/data && sudo rm -rf mariadb wordpress rsyslog # if you want to DEFINITELY delete and lose the persistent data (!WARNING)
 ```
+
+# BONUS:
+___
+
+4 more services are implemented in this inception project:
+- rsyslog centralizes the logs in its own volume.
+- adminer: an interface for managing databases.
+- lighttpd: a light server. Here it's used for serving simple html static page.
+- ftp: allow uploading and serving file (not securely).
+
 
 # Resources
 ___
