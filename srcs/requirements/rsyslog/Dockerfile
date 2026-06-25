@@ -11,8 +11,6 @@ RUN sed -i 's/^module(load="imklog")/#module(load="imklog")/' /etc/rsyslog.conf
 WORKDIR /var/log/centralized
 
 COPY conf/syslog.conf /etc/rsyslog.d/syslog.conf
-COPY tools/entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
 
 EXPOSE 514
 
