@@ -1,6 +1,5 @@
 Vagrant.configure("2") do |config|
   config.vm.box = "generic/alpine319"
-  config.ssh.forward_agent = true
   config.vm.hostname = "inception"
 
   config.vm.provider "virtualbox" do |vb|
@@ -10,15 +9,15 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.network "private_network", ip: "192.168.56.10"
-  config.vm.network "forwarded_port", guest: 543, host: 8543
+  config.vm.network "forwarded_port", guest: 543, host: 8543, auto_correct: true
 
   config.vm.synced_folder ".", "/vagrant", type: "rsync"
 
-  # --- Provisioning : création de l'user jwuille ---
+  # --- Provisioning : creating user jwuille ---
   config.vm.provision "shell", inline: <<-SHELL
     set -e
 
-    # Paquets nécessaires
+    # Packages
     apk update
     apk add docker docker-compose docker-cli-compose make git curl sudo bash firefox-esr xauth
     
@@ -28,21 +27,21 @@ Vagrant.configure("2") do |config|
     # Fonts
     apk add font-noto font-noto-cjk font-noto-emoji ttf-dejavu fontconfig
 
-    # Création de l'utilisateur jwuille
+    # Create User
     if ! id jwuille >/dev/null 2>&1; then
       adduser -D -s /bin/bash jwuille
       echo "jwuille:jwuille" | chpasswd
     fi
 
-    # Ajout aux groupes nécessaires
+    # Add groups
     adduser jwuille docker
     adduser jwuille wheel 2>/dev/null || true
 
-    # Droits sudo sans mot de passe
+    # Sudo no password
     echo "jwuille ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/jwuille
     chmod 440 /etc/sudoers.d/jwuille
     
-    # Docker au démarrage
+    # Docker boot
     rc-update add docker boot
     service docker start || true
 
@@ -58,7 +57,7 @@ Vagrant.configure("2") do |config|
 
     rc-service sshd restart
     
-    # Copie de la clé SSH de vagrant vers jwuille (pour que Vagrant puisse se connecter)
+    # Copie key SSH of vagrant to jwuille (for allowing Vagrant to connect)
     mkdir -p /home/jwuille/.ssh
     cp /home/vagrant/.ssh/authorized_keys /home/jwuille/.ssh/authorized_keys
     chown -R jwuille:jwuille /home/jwuille/.ssh
@@ -66,6 +65,6 @@ Vagrant.configure("2") do |config|
     chmod 600 /home/jwuille/.ssh/authorized_keys
   SHELL
 
-  # --- Dire à Vagrant d'utiliser jwuille pour SSH ---
+  # --- tell Vagrant to use jwuille for SSH ---
   # config.ssh.username = "jwuille"
 end
