@@ -1,4 +1,4 @@
-name: "${DOMAIN_NAME}"
+name: inception
 
 secrets:
   mysql_password:
