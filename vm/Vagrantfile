@@ -1,5 +1,8 @@
+username = "jwuille"
+
 Vagrant.configure("2") do |config|
   config.vm.box = "generic/alpine319"
+  config.ssh.forward_agent = true
   config.vm.hostname = "inception"
 
   config.vm.provider "virtualbox" do |vb|
@@ -9,12 +12,12 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.network "private_network", ip: "192.168.56.10"
-  config.vm.network "forwarded_port", guest: 543, host: 8543, auto_correct: true
+  config.vm.network "forwarded_port", guest: 543, host: 8543
 
   config.vm.synced_folder ".", "/vagrant", type: "rsync"
 
-  # --- Provisioning : creating user jwuille ---
-  config.vm.provision "shell", inline: <<-SHELL
+  # --- Provisioning : creating user ---
+  config.vm.provision "shell", env: {"USERNAME" => username }, inline: <<-SHELL
     set -e
 
     # Packages
@@ -28,25 +31,25 @@ Vagrant.configure("2") do |config|
     apk add font-noto font-noto-cjk font-noto-emoji ttf-dejavu fontconfig
 
     # Create User
-    if ! id jwuille >/dev/null 2>&1; then
-      adduser -D -s /bin/bash jwuille
-      echo "jwuille:jwuille" | chpasswd
+    if ! id $USERNAME >/dev/null 2>&1; then
+      adduser -D -s /bin/bash $USERNAME
+      echo "$USERNAME:$USERNAME" | chpasswd
     fi
 
     # Add groups
-    adduser jwuille docker
-    adduser jwuille wheel 2>/dev/null || true
+    adduser $USERNAME docker
+    adduser $USERNAME wheel 2>/dev/null || true
 
     # Sudo no password
-    echo "jwuille ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/jwuille
-    chmod 440 /etc/sudoers.d/jwuille
+    echo "$USERNAME ALL=(ALL) NOPASSWD: ALL" > "/etc/sudoers.d/$USERNAME"
+    chmod 440 "/etc/sudoers.d/$USERNAME"
     
     # Docker boot
     rc-update add docker boot
     service docker start || true
 
     # # /etc/hosts
-    sed -i "s/localhost /localhost ${USERNAME}.42.fr/g" /etc/hosts
+    sed -i "s/localhost /localhost ${USERNAME}.42.fr /g" /etc/hosts
 
     # SSH X11 forwarding
     sed -i '/^X11Forwarding/d; /^#X11Forwarding/d' /etc/ssh/sshd_config
@@ -57,14 +60,15 @@ Vagrant.configure("2") do |config|
 
     rc-service sshd restart
     
-    # Copie key SSH of vagrant to jwuille (for allowing Vagrant to connect)
-    mkdir -p /home/jwuille/.ssh
-    cp /home/vagrant/.ssh/authorized_keys /home/jwuille/.ssh/authorized_keys
-    chown -R jwuille:jwuille /home/jwuille/.ssh
-    chmod 700 /home/jwuille/.ssh
-    chmod 600 /home/jwuille/.ssh/authorized_keys
+    # Copie key SSH of vagrant to $USERNAME (for allowing Vagrant to connect)
+    mkdir -p "/home/$USERNAME/.ssh"
+    cp /home/vagrant/.ssh/authorized_keys "/home/$USERNAME/.ssh/authorized_keys"
+    chown -R "$USERNAME:$USERNAME" "/home/$USERNAME/.ssh"
+    chmod 700 "/home/$USERNAME/.ssh"
+    chmod 600 "/home/$USERNAME/.ssh/authorized_keys"
   SHELL
 
-  # --- tell Vagrant to use jwuille for SSH ---
-  # config.ssh.username = "jwuille"
+  # --- tell Vagrant to use $USERNAME for SSH ---
+  # config.ssh.username = username
 end
+
