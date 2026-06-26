@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+SSH_KEY=$(cat ~/.ssh/id*.pub)
 GOINFRE=$HOME/goinfre
 # Config
 # ==================
@@ -11,8 +12,8 @@ RAM=4096
 CPUS=2
 DISK_SIZE_MB=9000
 
-PATH_VM=$GOINFRE
-# PATH_VM=$HOME
+# PATH_VM=$GOINFRE
+PATH_VM=$HOME
 # ==================
 
 DEBIAN_VERSION="12.11.0"
@@ -115,6 +116,20 @@ echo 'X11Forwarding yes' >> /etc/ssh/sshd_config
 sed -i '/^X11UseLocalhost/d; /^#X11UseLocalhost/d' /etc/ssh/sshd_config
 echo 'X11UseLocalhost no' >> /etc/ssh/sshd_config
 
+# SSH allow host
+mkdir -p "/home/${USERNAME}/.ssh"
+echo "${SSH_KEY}" > "/home/${USERNAME}/.ssh/authorized_keys"
+
+sed -i '/^PubkeyAuthentication/d; /^#PubkeyAuthentication/d' /etc/ssh/sshd_config
+echo 'PubkeyAuthentication yes' >> /etc/ssh/sshd_config
+
+sed -i '/^AuthorizedKeysFile/d; /^#AuthorizedKeysFile/d' /etc/ssh/sshd_config
+echo 'AuthorizedKeysFile .ssh/authorized_keys' >> /etc/ssh/sshd_config
+
+#PasswordAuthentication yes
+sed -i '/^PasswordAuthentication/d; /^#PasswordAuthentication/d' /etc/ssh/sshd_config
+echo 'PasswordAuthentication yes' >> /etc/ssh/sshd_config
+
 systemctl enable ssh docker
 
 # Cleanup
@@ -140,5 +155,5 @@ VBoxManage unattended install "$VM_NAME" \
   --country="FR" \
   --package-selection-adjustment=minimal \
   --auxiliary-base-path="$AUX_DIR/" \
-  --post-install-command="chroot /target /bin/bash -c \"echo ${SCRIPT_B64} | base64 -d > /root/setup.sh && chmod +x /root/setup.sh && USERNAME=${USERNAME} /root/setup.sh\"" \
+  --post-install-command="chroot /target /bin/bash -c \"echo ${SCRIPT_B64} | base64 -d > /root/setup.sh && chmod +x /root/setup.sh && USERNAME=${USERNAME} SSH_KEY='${SSH_KEY}' /root/setup.sh\"" \
   --start-vm=gui
