@@ -1,6 +1,6 @@
 FROM debian:12
 
-RUN set -e
+RUN set -e \
 	&& mkdir -p /etc/mail \
     && touch /etc/mail/access /etc/mail/aliases \
 	&& apt-get update && apt-get install -y \
