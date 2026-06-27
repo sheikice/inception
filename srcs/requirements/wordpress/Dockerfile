@@ -1,6 +1,9 @@
 FROM debian:12
 
-RUN set -e && apt-get update && apt-get install -y \
+RUN set -e
+	&& mkdir -p /etc/mail \
+    && touch /etc/mail/access /etc/mail/aliases \
+	&& apt-get update && apt-get install -y \
 	php8.2-fpm \
 	php8.2-redis \
     php8.2-mysql \
@@ -28,4 +31,5 @@ EXPOSE 9000
 ENTRYPOINT ["setup_wp.sh"]
 
 CMD ["php-fpm8.2", "-F"]
+
 
