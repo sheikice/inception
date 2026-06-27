@@ -203,8 +203,8 @@ services:
         ipv4_address: 10.5.0.10
     healthcheck:
       test: ["CMD", "nc", "-vz", "-w", "2", "localhost", "514"]
-      interval: 30s
-      timeout: 10s
+      interval: 2s
+      timeout: 2s
       retries: 3
       start_period: 2s
     restart: unless-stopped
