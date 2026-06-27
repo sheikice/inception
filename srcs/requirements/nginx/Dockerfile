@@ -1,6 +1,6 @@
 FROM debian:12
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
 	nginx \
 	openssl \
 	procps \

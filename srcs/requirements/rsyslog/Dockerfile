@@ -1,7 +1,7 @@
 FROM debian:12
 
 
-RUN apt-get update && apt-get install -y rsyslog netcat-openbsd \
+RUN apt-get update && apt-get install -y --no-install-recommends rsyslog netcat-openbsd \
 	&& rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /var/log/centralized
