@@ -6,7 +6,7 @@ up:
 
 ssh:
 	@sed -i "s/#config.ssh.username/ config.ssh.username/" Vagrantfile
-	@vagrant ssh
+	@vagrant ssh -- -Y
 down:
 	@vagrant halt
 
